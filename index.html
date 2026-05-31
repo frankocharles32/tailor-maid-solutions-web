@@ -1,0 +1,266 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailor Maid Solutions | Bin Butlers AI-Powered Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #20c997;
+            --color-secondary: #DAA520;
+            --color-khaki: #b8a68b;
+        }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .hero-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1600');
+            background-size: cover;
+            background-position: center;
+        }
+        .apt-bg { background-image: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.95)), url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&q=80&w=800'); background-size: cover; }
+        .hoa-bg { background-image: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.95)), url('https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?auto=format&fit=crop&q=80&w=800'); background-size: cover; }
+        .logo-shadow { filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15)); }
+       
+        #ai-chat-window {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(120%);
+        }
+        #ai-chat-window.active { transform: translateY(0); }
+        .chat-bubble-user { background: #e2e8f0; border-radius: 1.2rem 1.2rem 0 1.2rem; }
+        .chat-bubble-ai { background: #20c997; color: white; border-radius: 1.2rem 1.2rem 1.2rem 0; }
+       
+        .loader {
+            width: 12px; height: 12px; border: 2px solid #FFF; border-bottom-color: transparent;
+            border-radius: 50%; display: inline-block; box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+       
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="font-inter bg-slate-50 text-slate-800">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tms-primary': '#20c997',
+                        'tms-gold': '#DAA520',
+                        'tms-khaki': '#b8a68b',
+                    },
+                }
+            }
+        }
+    </script>
+   
+    <!-- AI Chat Toggle Button -->
+    <button onclick="toggleChat()" class="fixed bottom-24 right-6 z-50 bg-tms-primary text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition flex items-center space-x-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        <span class="font-bold text-sm">Ask Butler AI</span>
+    </button>
+
+    <a href="#appointment" class="fixed bottom-6 right-6 z-50 bg-tms-gold text-white font-black py-4 px-8 rounded-full shadow-2xl hover:scale-105 flex items-center space-x-3">
+        <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+        </span>
+        <span class="inline">Request Appointment</span>
+    </a>
+
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="logo-tms.jpg
+" alt="Tailor Maid Solutions Logo" class="h-16 w-auto logo-shadow">
+                <div class="hidden lg:block border-l border-slate-200 pl-4">
+                    <p class="text-[10px] font-bold text-tms-gold uppercase tracking-[0.2em]">The Gold Standard</p>
+                    <p class="text-sm font-black text-slate-900 uppercase">Valet Trash Solutions</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="tel:4049804911" class="text-lg font-black text-slate-900 hover:text-tms-primary transition hidden md:block">404-980-4911</a>
+                <a href="#appointment" class="bg-tms-primary text-white font-bold py-2.5 px-6 rounded-xl shadow-lg hover:bg-opacity-90 transition">
+                    Schedule Now
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-bg relative text-white py-24 md:py-36 px-6 overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
+            <div class="bg-white p-2 rounded-full shadow-2xl mb-10 transform -rotate-1 hover:rotate-0 transition duration-500 max-w-[220px]">
+                <img src="logo-butler.png
+" alt="Bin Butlers Logo" class="w-full h-auto rounded-full">
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black mb-6 tracking-tight leading-tight">
+                White-Glove Waste <br class="hidden md:block"> <span class="text-tms-primary italic font-serif">Management</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-100 max-w-3xl mb-12 font-light leading-relaxed">
+                Experience the <span class="font-bold border-b-2 border-tms-gold">Bin Butlers</span> difference. Professional, uniformed service tailored for the most prestigious communities.
+            </p>
+        </div>
+    </section>
+
+    <div id="ai-chat-window" class="fixed bottom-0 right-0 left-0 md:left-auto md:right-6 md:w-96 md:bottom-24 bg-white shadow-2xl z-50 rounded-t-3xl md:rounded-3xl overflow-hidden border border-slate-200">
+        <div class="bg-tms-primary p-4 text-white flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="uploaded:1000009821.jpg" class="w-10 h-10 rounded-full border-2 border-white/20" alt="AI">
+                <div>
+                    <h4 class="font-black text-sm">Butler Assistant</h4>
+                    <p class="text-[10px] opacity-80 uppercase tracking-widest font-bold">Always Online</p>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="p-2 hover:bg-white/10 rounded-full">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="chat-messages" class="h-80 overflow-y-auto p-4 space-y-4 bg-slate-50 text-sm">
+            <div class="chat-bubble-ai p-3 max-w-[85%]">
+                Hello! I am your AI Butler Assistant. Ask me anything about your trash pickup schedule or service rules!
+            </div>
+        </div>
+        <div class="p-4 bg-white border-t flex space-x-2">
+            <input type="text" id="chat-input" placeholder="Type your question..." class="flex-1 bg-slate-100 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-tms-primary" onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" id="send-btn" class="bg-tms-primary text-white p-2 rounded-xl hover:opacity-90">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <section id="services" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="apt-bg rounded-[2.5rem] p-10 shadow-xl relative overflow-hidden group">
+                    <h3 class="text-3xl font-black mb-6">Apartment Valet</h3>
+                    <ul class="space-y-4 mb-8 font-medium">
+                        <li>🗓️ Sun–Fri | 6:00 PM – 10:00 PM</li>
+                        <li>📦 Box breakdown Tue/Thu</li>
+                        <li>🧹 Full Porter/Dumpster Policing</li>
+                    </ul>
+                </div>
+                <div class="hoa-bg rounded-[2.5rem] p-10 shadow-xl relative overflow-hidden group">
+                    <h3 class="text-3xl font-black mb-6">HOA Care</h3>
+                    <ul class="space-y-4 mb-8 font-medium">
+                        <li>🚜 Cans out day 1, back day 2</li>
+                        <li>⏱️ Mon–Fri | 8:00 AM – 5:00 PM</li>
+                        <li>🏡 Curb-appeal focused service</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="appointment" class="py-24 bg-slate-100">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+                <div class="bg-tms-primary p-12 text-white md:w-2/5">
+                    <h4 class="text-4xl font-black mb-6">Smart Quotes.</h4>
+                    <p class="opacity-80 mb-10">Use our AI tool to see how Bin Butlers can transform your community value.</p>
+                    <div class="space-y-4">
+                        <input type="number" id="unit-count" placeholder="Number of Units" class="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/50 outline-none">
+                        <select id="prop-type" class="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white outline-none">
+                            <option value="Apartment Complex" class="text-slate-800">Apartment Complex</option>
+                            <option value="HOA Neighborhood" class="text-slate-800">HOA Neighborhood</option>
+                        </select>
+                        <button onclick="generateProposal()" id="proposal-btn" class="w-full bg-white text-tms-primary font-black py-4 rounded-2xl shadow-xl hover:scale-105 transition">
+                            Generate AI Proposal
+                        </button>
+                    </div>
+                </div>
+                <div class="p-12 md:w-3/5 flex flex-col">
+                    <div id="proposal-output" class="flex-1 bg-slate-50 rounded-3xl p-6 overflow-y-auto text-sm italic text-slate-500 min-h-[300px]">
+                        Enter your community details on the left to generate a customized AI service proposal...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Placeholder for Gemini API (Canvas will inject key if empty)
+        const GEMINI_API_KEY = "";
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`;
+
+        function toggleChat() {
+            document.getElementById('ai-chat-window').classList.toggle('active');
+        }
+
+        async function callGemini(systemPrompt, userQuery) {
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                return "I'm sorry, I'm having trouble connecting to my brain right now. Please call us at 404-980-4911.";
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+            const query = input.value.trim();
+            if (!query) return;
+
+            messages.innerHTML += `<div class="chat-bubble-user p-3 ml-auto max-w-[85%]">${query}</div>`;
+            input.value = "";
+            messages.scrollTop = messages.scrollHeight;
+
+            const loadingId = 'loading-' + Date.now();
+            messages.innerHTML += `<div id="${loadingId}" class="chat-bubble-ai p-3 max-w-[85%]"><span class="loader"></span></div>`;
+
+            const systemPrompt = `You are the Bin Butlers AI Assistant for Tailor Maid Solutions.
+            RULES:
+            1. Apartment Pickup: Sun-Fri, 6-10 PM.
+            2. Box Breakdown: Tuesdays and Thursdays.
+            3. HOA Service: Cans out day 1, back day 2. Mon-Fri 8-5 PM.
+            4. Phone: 404-980-4911.
+            Be professional, helpful, and friendly. If you don't know something, ask them to call.`;
+
+            const aiResponse = await callGemini(systemPrompt, query);
+            document.getElementById(loadingId).innerHTML = aiResponse;
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        async function generateProposal() {
+            const units = document.getElementById('unit-count').value;
+            const type = document.getElementById('prop-type').value;
+            const output = document.getElementById('proposal-output');
+            const btn = document.getElementById('proposal-btn');
+
+            if (!units) { alert("Please enter the number of units."); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = "Consulting AI...";
+            output.innerHTML = `<div class="flex justify-center items-center h-full"><span class="loader border-tms-primary"></span></div>`;
+
+            const systemPrompt = `You are a world-class waste management consultant for Bin Butlers.
+            Write a persuasive, high-end one-page proposal for a ${type} with ${units} units.
+            Mention the professional teal and gold uniforms and our high standards.
+            Format it clearly with professional language.`;
+
+            const proposal = await callGemini(systemPrompt, `Generate a proposal for a ${type} with ${units} units.`);
+            output.innerHTML = `<div class="text-slate-800 italic whitespace-pre-wrap">${proposal}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = "Generate AI Proposal";
+        }
+    </script>
+
+    <footer class="bg-white border-t p-10 text-center">
+        <img src="uploaded:1000006104.jpg" class="h-20 mx-auto mb-4" alt="Tailor Maid">
+        <p class="text-slate-400 text-xs uppercase font-black tracking-widest">© 2024 Tailor Maid Solutions | Powered by Gemini AI</p>
+    </footer>
+
+</body>
+</html>
